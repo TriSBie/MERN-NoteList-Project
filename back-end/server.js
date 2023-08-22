@@ -2,7 +2,7 @@ require("dotenv").config()
 const express = require("express")
 const path = require("path")
 const app = express()
-const { logger, logEvents } = require("./logs/logger")
+const { logger, logEvents } = require("./middleware/logger")
 const errorHandler = require("./middleware/errorHandler")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
@@ -30,11 +30,12 @@ app.use(express.json()) // for parsing application/json
 /**------------------------------------------------------------------------------------ */
 //to serve static files such as images, CSS files, and Javascript files. 
 //Use the express.static
-// app.use("/", express.static(path.join(__dirname, "/public"))); //OR we can change by app.use(express.static("public"))
+app.use("/", express.static(path.join(__dirname, "/public"))); //OR we can change by app.use(express.static("public"))
 
 
 //LISTEN ROOT ROUTE, , express static - global varibale nodejs will look up path public as static files in side
 app.use("/", require("./routes/root"))
+app.use("/auth", require("./routes/authRoutes.js"))
 app.use("/users", require("./routes/userRoutes"));
 app.use("/notes", require("./routes/noteRoutes.js"));
 /**------------------------------------------------------------------------------------ */

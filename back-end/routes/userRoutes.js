@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controller/userController")
+const verifyJWT = require("../middleware/verifyJWT")
+
+router.use(verifyJWT)
 
 //we can wrap all discrete method from module export into one
 router.route("/")
