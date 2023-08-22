@@ -17,21 +17,16 @@ const login = asyncHandler(async (req, res) => {
             message: 'All fields are required'
         })
     }
-    const foundUser = User.findOne({ username }).exec()
-
-    if (!foundUser) {
+    const foundUser = await User.findOne({ username }).exec()
+    if (!foundUser || !foundUser.active) {
         res.status(401).json({
             message: 'Unauthorized'
         })
     }
 
-    const match = bcrypt.compare(password, foundUser.password);
-
-    if (!match) {
-        res.status(401).json({
-            message: 'Unauthorized'
-        })
-    }
+    const match = await bcrypt.compare(password, foundUser.password)
+    console.log(match)
+    if (!match) return res.status(401).json({ message: 'Unauthorized' })
 
     //jwt.sign(data, secretCode, expiresTime)
     const accessToken = jwt.sign({
@@ -58,11 +53,10 @@ const login = asyncHandler(async (req, res) => {
     //Create secure cookie with refresh token and push in cookies storage
     res.cookie('jwt', refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None', //cross-site cookie- prevent malicious executable scripts into the code
+        // secure: true,
+        sameSite: 'none', //cross-site cookie- prevent malicious executable scripts into the code
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
-
     res.json({
         accessToken
     })
@@ -75,11 +69,9 @@ const login = asyncHandler(async (req, res) => {
 
 const refresh = asyncHandler(async (req, res) => {
     const cookies = req.cookies
-
+    console.log(cookies.jwt)
     //send error if user haven't logged in yet.
-    if (!cookies?.jwt) return res.status(401).json({
-        message: 'Unauthorized'
-    })
+    if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
     const refreshToken = cookies?.jwt
 
@@ -94,7 +86,7 @@ const refresh = asyncHandler(async (req, res) => {
             })
 
             //find username - cannot cast decoded.username inside, must includes pair key and value of being search.
-            const foundUser = User.findOne({ username: decoded.usename }).exec();
+            const foundUser = await User.findOne({ username: decoded.username }).exec();
 
             if (!foundUser) return res.status(401).json({
                 message: 'Unauthorized'
@@ -112,11 +104,9 @@ const refresh = asyncHandler(async (req, res) => {
                     expiresIn: '15m'
                 }
             )
-
             res.json({
                 accessToken
             })
-
         })
     )
 })
@@ -136,7 +126,7 @@ const logout = asyncHandler(async (req, res) => {
     res.clearCookie('jwt', {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        // secure: true
     })
 
     res.json({ message: 'Cookie cleared' })

@@ -4,7 +4,7 @@ const path = require("path")
 const app = express()
 const { logger, logEvents } = require("./middleware/logger")
 const errorHandler = require("./middleware/errorHandler")
-const cookieParser = require("cookie-parser")
+const cookieParser = require('cookie-parser')
 const cors = require("cors")
 const corsOptions = require("./config/corsOption")
 const mongoose = require("mongoose")
@@ -23,10 +23,12 @@ app.use(logger)
 app.use(cors({ credentials: true, origin: true })) //three options: options, credential, optionsSuccessStatus
 
 
+app.use(cookieParser())
+
+
 // CHANGE THE CONTENT/TYPES - By default text/HTML
 app.use(express.json()) // for parsing application/json
 
-// app.use(cookieParser)
 /**------------------------------------------------------------------------------------ */
 //to serve static files such as images, CSS files, and Javascript files. 
 //Use the express.static
@@ -35,9 +37,9 @@ app.use("/", express.static(path.join(__dirname, "/public"))); //OR we can chang
 
 //LISTEN ROOT ROUTE, , express static - global varibale nodejs will look up path public as static files in side
 app.use("/", require("./routes/root"))
-app.use("/auth", require("./routes/authRoutes.js"))
+app.use("/auth", require("./routes/authRoutes"))
 app.use("/users", require("./routes/userRoutes"));
-app.use("/notes", require("./routes/noteRoutes.js"));
+app.use("/notes", require("./routes/noteRoutes"));
 /**------------------------------------------------------------------------------------ */
 //req.accepts(types) : checks if the specified content types are acceptable, based on the request's Accept HTTP header
 const PORT = process.env.PORT || 3500
