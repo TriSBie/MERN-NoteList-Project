@@ -9,9 +9,9 @@ import UserlList from './features/users/UserlList'
 import NoteList from './features/notes/NoteList'
 import EditNote from './features/notes/EditNote'
 import EditUser from './features/users/EditUser'
-import NewNoteForm from './features/notes/NewNoteForm'
 import NewUserForm from './features/users/NewUserForm'
 import Prefetch from './features/auth/Prefetch'
+import NewNote from './features/notes/NewNote'
 
 function App() {
   return (
@@ -24,11 +24,12 @@ function App() {
           <Route path='login' element={<Login />}></Route>
 
         </Route>
+        {/**----------------REFETCH_ROUTES-------------- */}
         <Route element={<Prefetch />}>
           <Route path='dash' element={<DashLayout />}>
 
             <Route index element={<Welcome />}></Route>
-
+            {/**----------------PRIVATE_ROUTES-------------- */}
             <Route path='users'>
               <Route index element={<UserlList />} />
               <Route path=':id' element={<EditUser />} />
@@ -39,8 +40,9 @@ function App() {
             <Route path='notes'>
               <Route index element={<NoteList />} />
               <Route path=':id' element={<EditNote />} />
-              <Route path='new' element={<NewNoteForm />} />
+              <Route path='new' element={<NewNote />} />
             </Route>
+            {/**----------------PRIVATE_ROUTES-------------- */}
           </Route>
         </Route> {/**End Dash Route*/}
       </Routes>

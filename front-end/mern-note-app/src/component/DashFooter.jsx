@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 const DashFooter = () => {
     const navigate = useNavigate()
     const { pathname } = useLocation();
+    console.log(pathname) //return a pathname URL
 
     const onGoHome = () => {
         navigate('/dash') //navigate to Dash Home Page
@@ -18,7 +19,7 @@ const DashFooter = () => {
                 title='Go Home'
                 onClick={onGoHome}
             >
-                <FontAwesomeIcon icon={faHouse}></FontAwesomeIcon>
+                <FontAwesomeIcon icon={faHouse} />
             </button >
         )
     }

@@ -1,12 +1,15 @@
 import { useSelector } from 'react-redux'
 import NewNoteForm from './NewNoteForm'
 import { selectAllUsers } from '../users/userApiSlice'
-selectAllUsers
 const NewNote = () => {
     //get all users
-    const users = useSelector(selectAllUsers)
+    const users = useSelector(selectAllUsers)//return an array - check an array is empty or not
+    console.log({ users })
+    if (!users.length) {
+        return <p>Not Available User</p>
+    }
 
-    const content = users ? <NewNoteForm users={users} /> : <p>Loading...</p>
+    const content = <NewNoteForm users={users} />
 
     return content
 }

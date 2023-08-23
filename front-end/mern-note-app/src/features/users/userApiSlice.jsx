@@ -104,7 +104,6 @@ export const {
 
 // return the query result object
 export const selectUsersResult = userApiSlice.endpoints.getUsers.select();
-console.log({ selectUsersResult })
 
 // creates memoized - function selector
 const selectUsersData = createSelector(
