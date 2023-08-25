@@ -11,13 +11,11 @@ const UserlList = () => {
         isLoading,
         isError,
         error
-    } = useGetUsersQuery(undefined, {
+    } = useGetUsersQuery('userList', {
         pollingInterval: 60000, //60 sseconds
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
-
-    console.log(users)
     let content;
 
     if (isLoading) {

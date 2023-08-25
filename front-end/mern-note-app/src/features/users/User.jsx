@@ -3,13 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { selectUserById } from './userApiSlice'
+import { selectUserById, useGetUsersQuery } from './userApiSlice'
 
 
 const User = ({ userId }) => {
     //user model include username, password, roles, active
-    const user = useSelector(state => selectUserById(state, userId))
-    console.log({ user })
+    const { user } = useGetUsersQuery("userList", {
+        selectFromResult: ({ data }) => ({
+            user: data?.entities[userId]
+        })
+    })
     const navigate = useNavigate()
     if (user) {
         const handleEdit = () => navigate(`/dash/users/${userId}`)

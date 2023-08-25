@@ -14,6 +14,7 @@ const store = configureStore({
     devTools: true
 })
 
+//enable refetchOnFocus and refetchOnReconnect
 setupListeners(store.dispatch)
 
 export default store

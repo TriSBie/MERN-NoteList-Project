@@ -12,6 +12,7 @@ import EditUser from './features/users/EditUser'
 import NewUserForm from './features/users/NewUserForm'
 import Prefetch from './features/auth/Prefetch'
 import NewNote from './features/notes/NewNote'
+import PersistLogin from './features/auth/PersistLogin'
 
 function App() {
   return (
@@ -24,26 +25,30 @@ function App() {
           <Route path='login' element={<Login />}></Route>
 
         </Route>
-        {/**----------------REFETCH_ROUTES-------------- */}
-        <Route element={<Prefetch />}>
-          <Route path='dash' element={<DashLayout />}>
+        {/**----------------RELOGIN_ROUTES-------------- */}
+        <Route element={<PersistLogin />}>
+          {/**----------------REFETCH_ROUTES-------------- */}
+          <Route element={<Prefetch />}>
+            <Route path='dash' element={<DashLayout />}>
 
-            <Route index element={<Welcome />}></Route>
-            {/**----------------PRIVATE_ROUTES-------------- */}
-            <Route path='users'>
-              <Route index element={<UserlList />} />
-              <Route path=':id' element={<EditUser />} />
-              <Route path='new' element={<NewUserForm />} />
-              <Route></Route>
-            </Route>
+              <Route index element={<Welcome />}></Route>
+              {/**----------------PRIVATE_ROUTES-------------- */}
+              <Route path='users'>
+                <Route index element={<UserlList />} />
+                <Route path=':id' element={<EditUser />} />
+                <Route path='new' element={<NewUserForm />} />
+                <Route></Route>
+              </Route>
 
-            <Route path='notes'>
-              <Route index element={<NoteList />} />
-              <Route path=':id' element={<EditNote />} />
-              <Route path='new' element={<NewNote />} />
+              <Route path='notes'>
+                <Route index element={<NoteList />} />
+                <Route path=':id' element={<EditNote />} />
+                <Route path='new' element={<NewNote />} />
+              </Route>
+              {/**----------------PRIVATE_ROUTES-------------- */}
             </Route>
-            {/**----------------PRIVATE_ROUTES-------------- */}
           </Route>
+
         </Route> {/**End Dash Route*/}
       </Routes>
     </BrowserRouter>

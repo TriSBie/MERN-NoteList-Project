@@ -1,5 +1,5 @@
 import { apiSlice } from "../../app/apiSlice";
-import { logOut } from "./authSlice";
+import { logOut, setCredentials } from "./authSlice";
 
 
 //injectedEnpoint from apiSlice
@@ -17,7 +17,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
         sendLogout: builder.mutation({
             query: () => ({
                 url: '/auth/logout',
-                method: 'POST'
+                method: 'GET',
+                credentials: 'include',
             }),
             // onQueryStarted is useful for optimistic updates
             // The 2nd parameter is the destructured `MutationLifecycleApi`
@@ -25,9 +26,11 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 dispatch, queryFulfilled
             }) {
                 try {
-                    await queryFulfilled //return a data => destructing to get more infomation
-                    dispatch(logOut()) //call action to reducers - payload will be null
-                    dispatch(apiSlice.util.resetApiState())
+                    const { data } = await queryFulfilled
+                    dispatch(logOut())
+                    setTimeout(() => {
+                        dispatch(apiSlice.util.resetApiState())
+                    }, 1000)
                 } catch (err) {
                     console.log(err)
                 }
@@ -36,15 +39,24 @@ export const authApiSlice = apiSlice.injectEndpoints({
         refresh: builder.mutation({
             query: () => ({
                 url: '/auth/refresh',
-                method: 'GET'
-            })
-        })
+                method: 'GET',
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled
+                    const { accessToken } = data
+                    dispatch(setCredentials({ accessToken }))
+                } catch (err) {
+                    console.log(err)
+                }
+            },
+        }),
     })
 })
 
 export const {
     useLoginMutation,
-    useRefreshMutation,
-    useSendLogoutMutation
+    useSendLogoutMutation,
+    useRefreshMutation
 } = authApiSlice
 //mutation return a tuple. First item in the tuple is the "trigger", second element contains an object (status, error, data)

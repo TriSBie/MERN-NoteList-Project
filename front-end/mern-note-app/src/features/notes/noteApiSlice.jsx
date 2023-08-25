@@ -33,12 +33,15 @@ export const noteApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => response.status === 200 && !result.isError,
             // keepUnusedDataFor: 5,  - not recommneded ( since it doesn't have any subcription)
             transformResponse: responseData => { // api return an arrays
-                const loaddedNote = responseData.map(note => {
+                const loadedNote = responseData.map(note => {
                     note.id = note._id
                     return note
                 })
                 //CRUD Functions - same as setMany, but its override.
-                return noteAdapter.setAll(initialState, loaddedNote)
+                return noteAdapter.setAll(initialState, loadedNote)
+            },
+            transformErrorResponse: (err) => {
+                console.log(err)
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
@@ -90,7 +93,6 @@ export const noteApiSlice = apiSlice.injectEndpoints({
     }),
 })
 
-
 //get Hook function
 export const {
     useGetNotesQuery,
@@ -103,19 +105,17 @@ export const {
 // return the query result object
 export const selectNotesResult = noteApiSlice.endpoints.getNotes.select();
 
-
 // creates memoized selector
 const selectNotesData = createSelector(
     selectNotesResult,
-    notesReducer => notesReducer.data // normalized state object with ids & entities
+    notesResult => notesResult.data // normalized state object with ids & entities
 )
 
 // getSelectors creates these selectors and we rename them with aliases using destructing
 export const {
     selectAll: selectAllNotes,
-    selectIds: selectNoteById,
-    selectById: selectNoteIds
-
+    selectIds: selectNoteId,
+    selectById: selectNoteById
     //Pass in selector that returns the notes slice of state
 } = noteAdapter.getSelectors(state => selectNotesData(state) ?? initialState)
 

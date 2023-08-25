@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { useLoginMutation } from "./authApiSlice"
 import { useDispatch } from 'react-redux';
 import { setCredentials } from './authSlice';
+import usePersist from '../hooks/usePersist';
 const Login = () => {
     const userRef = React.useRef(null);
     //useRef return a ref object - lets you reference a value that's not needed for rendering
@@ -11,6 +12,7 @@ const Login = () => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [errMsg, setErrMsg] = React.useState('');
+    const [persist, setPersist] = usePersist();
 
     const [login, {
         isLoading
@@ -32,13 +34,13 @@ const Login = () => {
 
     const handlePwdInput = (e) => setPassword(e.target.value);
     const handleUserInput = (e) => setUsername(e.target.value);
+    const handlePersistChange = () => setPersist((persist) => !persist);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const { accessToken } = await login({ username, password }).unwrap() //return a promise with an unwrap property. Must provide the raw response, error
             //unwrap will resolve the value of the fulfilled action, or throw on a rejected action
-            console.log(accessToken)
             dispatch(setCredentials({ accessToken }))
             setUsername('')
             setPassword('')
@@ -96,6 +98,18 @@ const Login = () => {
                         required
                     />
                     <button className="form__submit-button">Sign In</button>
+
+
+                    <label htmlFor='persist'>
+                        <input
+                            className='form__checkbox'
+                            id='persist'
+                            onChange={handlePersistChange}
+                            checked={persist}
+                            type='checkbox'
+                        />
+                        Trust this device
+                    </label>
                 </form>
             </main>
             <footer>

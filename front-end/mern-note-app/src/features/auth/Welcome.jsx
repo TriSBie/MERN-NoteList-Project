@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 const Welcome = () => {
     const date = new Date()
+    const { username, isAdmin, isManager } = useAuth()
 
     //INTERNATIONAL FORMAT
     const today = new Intl.DateTimeFormat('en-US', {
@@ -13,13 +15,14 @@ const Welcome = () => {
 
             <p>{today}</p>
 
-            <h1>Welcome !</h1>
+            <h1>Welcome {username}!</h1>
 
             <Link to="/dash/notes">View NoteList</Link>
             <Link to="/dash/notes/new">Add New techNote</Link>
-            <Link to="/dash/users">View UserList</Link>
-            <Link to="/dash/users/new">Add New User</Link>
-        </section>
+            {/**using conditional rendering */}
+            {(isAdmin || isManager) && <Link to="/dash/users">View UserList</Link>}
+            {(isAdmin || isManager) && <Link to="/dash/users/new">Add New User</Link>}
+        </section >
     )
     return (
         content

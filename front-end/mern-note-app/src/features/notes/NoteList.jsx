@@ -1,6 +1,6 @@
 import Note from "./Note";
 import { useGetNotesQuery } from "./noteApiSlice"
-
+import useAuth from "../hooks/useAuth";
 
 const NoteList = () => {
     const {
@@ -9,11 +9,13 @@ const NoteList = () => {
         isError,
         isSuccess,
         error
-    } = useGetNotesQuery(undefined, {
-        pollingInterval: 15000,
+    } = useGetNotesQuery('noteList', {
+        pollingInterval: 15000, //requering after 15 seconds
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
+
+    const { username, isAdmin, isManager } = useAuth()
 
     let content;
     if (isLoading) {
@@ -23,9 +25,18 @@ const NoteList = () => {
         content = <p className="errmsg">{error?.data?.message}</p>
     }
     if (isSuccess) {
-        const { ids } = notes;
-        const tableContent = ids?.length ? ids.map(noteId =>
-            <Note key={noteId} noteId={noteId} />) : null;
+        const { ids, entities } = notes;
+        //ids return unique array id
+        //entities : return object with ids key and value 
+        //spread all available ids with role ADMIN or Manager
+        let filteredID;
+        if (isManager || isAdmin) {
+            filteredID = [...ids]; //spread it to an array
+        } else {
+            filteredID = ids.filter(id => entities[id].username === username);
+        }
+        const tableContent = ids?.length && filteredID.map(noteId =>
+            <Note key={filteredID} noteId={filteredID} />)
         content = (
             <table className="table table--notes">
                 <thead className="table__thead">

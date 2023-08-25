@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 
 
 const getAllUser = asyncHandler(async (req, res) => {
+    const cookies = req.cookies;
     //all methods/ services manilpulate with mongoose would be async-await flow
     const users = await User.find({}).exec() //select all fields except password, signtax by "-field" (1)
     //.select("-password").lean();
@@ -18,7 +19,7 @@ const getAllUser = asyncHandler(async (req, res) => {
             message: 'No user found'
         })
     } //no need return statement since the return has been executed if errors occured
-    return res.status(200).json({ users });
+    return res.status(200).json(users);
 })
 
 //@desc Create new user
@@ -34,6 +35,7 @@ const createNewUser = asyncHandler(async (req, res) => {
             message: "All fields are required"
         })
     }
+
 
     //Check for duplicate
     const duplicate = await User.findOne({ username }); //(2)

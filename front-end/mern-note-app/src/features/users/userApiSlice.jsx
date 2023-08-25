@@ -14,8 +14,7 @@ import { apiSlice } from "../../app/apiSlice";
  *  entities: {}
  * }
  */
-const userAdapter = createEntityAdapter({
-})
+const userAdapter = createEntityAdapter({})
 
 //returns a new entity state objcet like {id:[], entities : {}}
 const initialState = userAdapter.getInitialState()
@@ -27,8 +26,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
             query: () => '/users',
             validateStatus: (response, result) => response.status === 200 && !result.isError,
             transformResponse: responseData => { // api return an arrays
-                console.log(responseData)
-                const loadedUser = responseData.users.map(user => {
+                const loadedUser = responseData.map(user => {
                     user.id = user._id
                     return user
                 })
@@ -108,7 +106,7 @@ export const selectUsersResult = userApiSlice.endpoints.getUsers.select();
 // creates memoized - function selector
 const selectUsersData = createSelector(
     selectUsersResult,
-    usersReducer => usersReducer.data // normalized state object with ids & entities
+    usersResult => usersResult.data // normalized state object with ids & entities
 )
 
 // getSelectors creates these selectors and we rename them with aliases using destructing
@@ -119,7 +117,6 @@ export const {
 
     //Pass in selector that returns the users slice of state
 } = userAdapter.getSelectors(state => selectUsersData(state) ?? initialState)
-
 
 /**
  * NORMALIZING STATE SHAPE

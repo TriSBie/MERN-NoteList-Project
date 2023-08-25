@@ -166,7 +166,7 @@ const EditNoteForm = ({ note, users }) => {
         </>
     )
     return (
-        <div>EditNoteForm</div>
+        content
     )
 }
 

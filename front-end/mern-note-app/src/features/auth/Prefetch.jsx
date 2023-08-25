@@ -9,16 +9,16 @@ const Prefetch = () => { //manual subscription instead expiredTime
         //set-up code runs when your component is added to the page (mounts)
         console.log('subscribing')
         //then your set-up code runs with new props and state
-        const notes = store.dispatch(noteApiSlice.endpoints.getNotes.initiate())
-        const users = store.dispatch(userApiSlice.endpoints.getUsers.initiate())
+        store.dispatch(noteApiSlice.util.prefetch('getNotes', 'notesList', { force: true }))
+        store.dispatch(userApiSlice.util.prefetch('getUsers', 'usersList', { force: true }))
 
-        //after every re-render of your component =>
-        return () => {
-            //clean code runs with old odd and state
-            console.log('unsubscribing')
-            notes.unsubscribe()
-            users.unsubscribe()
-        }
+        // //after every re-render of your component =>
+        // return () => {
+        //     //clean code runs with old odd and state
+        //     console.log('unsubscribing')
+        //     notes.unsubscribe()
+        //     users.unsubscribe()
+        // }
     }, [])
     return <Outlet />
 }

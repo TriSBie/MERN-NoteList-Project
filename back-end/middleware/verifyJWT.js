@@ -19,9 +19,11 @@ const verifyJWT = (req, res, next) => {
         token,
         process.env.ACCESS_TOKEN_SECRET,
         asyncHandler(async (err, decoded) => {
-            if (err) return res.status(403).json({
-                message: "Forbidden"
-            })
+            if (err) {
+                return res.status(403).json({
+                    message: "Forbidden"
+                })
+            }
 
             //set infomation in request
             req.user = decoded.UserInfo.username
