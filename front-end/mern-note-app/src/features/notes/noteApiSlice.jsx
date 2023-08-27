@@ -40,9 +40,6 @@ export const noteApiSlice = apiSlice.injectEndpoints({
                 //CRUD Functions - same as setMany, but its override.
                 return noteAdapter.setAll(initialState, loadedNote)
             },
-            transformErrorResponse: (err) => {
-                console.log(err)
-            },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     //spread syntax allows an iterable, such as an array or string

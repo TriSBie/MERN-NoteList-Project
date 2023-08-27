@@ -9,6 +9,7 @@ const baseQuery = fetchBaseQuery({
     // indicates whether the user agent should send or recives cookies from other domain
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token
+        console.log(token)
         if (token) {
             headers.set("authorization", `Bearer ${token}`)
         }
@@ -37,7 +38,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
                 // retry original query with new access token
                 result = await baseQuery(args, api, extraOptions)
             } else {
-                if (refreshResult?.error?.status === 403) {
+                if (refreshResult?.error?.status === 403 || result?.error?.status === 401 || result?.error) {
                     refreshResult.error.data.message = "Your login has expired."
                 }
                 return refreshResult

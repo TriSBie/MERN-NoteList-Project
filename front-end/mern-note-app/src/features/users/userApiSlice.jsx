@@ -23,14 +23,16 @@ export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         //define the pre-built hooked
         getUsers: builder.query({
-            query: () => '/users',
-            validateStatus: (response, result) => response.status === 200 && !result.isError,
+            query: () => ({
+                url: '/users',
+                validateStatus: (response, result) => response.status === 200 && !result.isError,
+            }),
             transformResponse: responseData => { // api return an arrays
-                const loadedUser = responseData.map(user => {
+                const loadedUsers = responseData.map(user => {
                     user.id = user._id
                     return user
-                })
-                return userAdapter.setAll(initialState, loadedUser)
+                });
+                return userAdapter.setAll(initialState, loadedUsers)
             },
             providesTags: (result, error, arg) => {
                 //result contains result with ids

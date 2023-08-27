@@ -72,10 +72,10 @@ const EditNoteForm = ({ note, users }) => {
         day: 'numeric', year: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric', second: 'numeric'
     })
 
-    const options = Array.from(ROLES, role => {
+    const options = users.map(user => {
         return (
-            <option key={role} value={role}>
-                {role}
+            <option key={user.id} value={user.id}>
+                {user.username}
             </option>
         )
     })

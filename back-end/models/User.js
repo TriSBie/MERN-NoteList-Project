@@ -8,10 +8,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    roles: [{
-        type: String,
-        default: 'Employee'
-    }] //using array indicates the value can have one or more values.
+    roles: {
+        type: [String],
+        default: ['Employee'] //by default
+    } //using array indicates the value can have one or more values.
     , active: {
         type: Boolean,
         default: true

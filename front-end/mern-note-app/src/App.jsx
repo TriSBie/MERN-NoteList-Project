@@ -13,7 +13,8 @@ import NewUserForm from './features/users/NewUserForm'
 import Prefetch from './features/auth/Prefetch'
 import NewNote from './features/notes/NewNote'
 import PersistLogin from './features/auth/PersistLogin'
-
+import RequireAuth from './features/auth/RequireAuth'
+import { ROLES } from './config/roles'
 function App() {
   return (
     <BrowserRouter>
@@ -22,36 +23,43 @@ function App() {
 
           <Route index element={<Public />} />
 
-          <Route path='login' element={<Login />}></Route>
+          <Route path='login' element={<Login />} />
 
         </Route>
         {/**----------------RELOGIN_ROUTES-------------- */}
         <Route element={<PersistLogin />}>
-          {/**----------------REFETCH_ROUTES-------------- */}
-          <Route element={<Prefetch />}>
-            <Route path='dash' element={<DashLayout />}>
 
-              <Route index element={<Welcome />}></Route>
-              {/**----------------PRIVATE_ROUTES-------------- */}
-              <Route path='users'>
-                <Route index element={<UserlList />} />
-                <Route path=':id' element={<EditUser />} />
-                <Route path='new' element={<NewUserForm />} />
-                <Route></Route>
-              </Route>
+          {/**----------------PROTECTED_ROUTES-------------- */}
+          <Route element={<RequireAuth allowedRoles={Object.values(ROLES)} />} >
+            {/**----------------REFETCH_ROUTES-------------- */}
+            <Route element={<Prefetch />}>
+              <Route path='dash' element={<DashLayout />}>
 
-              <Route path='notes'>
-                <Route index element={<NoteList />} />
-                <Route path=':id' element={<EditNote />} />
-                <Route path='new' element={<NewNote />} />
+                <Route index element={<Welcome />} />
+                {/**----------------PRIVATE_ROUTES-------------- */}
+
+                {/**ONLY ADMIN CAN ACCESS AND MANIPULATE */}
+                <Route element={<RequireAuth allowedRoles={[ROLES.Admin, ROLES.Manager]} />} >
+                  <Route path='users'>
+                    <Route index element={<UserlList />} />
+                    <Route path=':id' element={<EditUser />} />
+                    <Route path='new' element={<NewUserForm />} />
+                    <Route></Route>
+                  </Route>
+
+                  <Route path='notes'>
+                    <Route index element={<NoteList />} />
+                    <Route path=':id' element={<EditNote />} />
+                    <Route path='new' element={<NewNote />} />
+                  </Route>
+                  {/**----------------PRIVATE_ROUTES-------------- */}
+                </Route>
               </Route>
-              {/**----------------PRIVATE_ROUTES-------------- */}
             </Route>
           </Route>
-
         </Route> {/**End Dash Route*/}
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter >
   )
 }
 

@@ -1,4 +1,4 @@
-import User from './User';
+import User from './User'
 import { useGetUsersQuery } from './userApiSlice'
 // get Hook from apiSlice getting data, isFetching, isSuccess,...
 
@@ -17,6 +17,7 @@ const UserlList = () => {
         refetchOnMountOrArgChange: true
     })
     let content;
+    console.log({ error })
 
     if (isLoading) {
         content = <p>Loading...</p>
@@ -32,8 +33,8 @@ const UserlList = () => {
     if (isSuccess) {
         const { ids } = users;
         const tableContent = ids?.length
-            ? ids.map(userId => <User key={userId} userId={userId} />
-            ) : null
+            && ids.map(userId => <User key={userId} userId={userId} />
+            )
         content = (
             <table className="table table--users">
                 <thead className="table__thead">

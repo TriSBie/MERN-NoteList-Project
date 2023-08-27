@@ -29,8 +29,7 @@ const createNewUser = asyncHandler(async (req, res) => {
     //get information from Request Body
     const { username, password, roles } = req.body;
 
-    console.log(username, password, roles)
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    if (!username || !password) {
         return res.status(400).json({
             message: "All fields are required"
         })
@@ -45,7 +44,12 @@ const createNewUser = asyncHandler(async (req, res) => {
     }
     const hashPassword = await bcrypt.hash(password, 10); //10 is recommended - salt-rounds (cost-factor)
     console.log(hashPassword)
-    const userObject = { username, "password": hashPassword, roles } //must parse to JSON
+
+    const userObject = (Array.isArray(roles) && roles.length)
+        ? { username, "password": hashPassword, roles }
+        : { username, "password": hashPassword }
+
+    //must parse to JSON
     const user = await User.create(userObject);
     //CHECK IF CREATED SUCCESSFULLY
     if (user) {
@@ -82,6 +86,8 @@ const updateUser = asyncHandler(async (req, res) => {
 
     // Check for duplicate
     const duplicate = await User.findOne({ username }).lean().exec();
+
+    //allow updates to the original user
     if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(400).json({
             message: 'Duplicated username'

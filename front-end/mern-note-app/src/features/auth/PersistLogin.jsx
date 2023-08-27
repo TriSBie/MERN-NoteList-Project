@@ -2,16 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import usePersist from '../hooks/usePersist';
 import { Link, Outlet } from 'react-router-dom';
 import { useRefreshMutation } from './authApiSlice';
-import { useSelector } from 'react-redux';
-import { selectCurrentToken } from './authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentToken, setCredentials } from './authSlice';
 
 const PersistLogin = () => {
     const [persist] = usePersist();
     const token = useSelector(selectCurrentToken);
     const effecRan = useRef(false); //use to prevent change state after rendering
-
+    const dispatch = useDispatch()
     const [trueSuccess, setTrueSuccess] = useState(false)
-
     const [refresh, {
         isSuccess,
         isLoading,
@@ -24,10 +23,10 @@ const PersistLogin = () => {
             const verifyRefreshToken = async () => {
                 try {
                     console.log("Verifying refresh token")
-                    const response = await refresh().unwrap(); //return data\
+                    await refresh().unwrap(); //return data
                     setTrueSuccess(true) //isSuccess - or setTrueSuccess
                 } catch (err) {
-                    console.log({ ...err })
+                    console.log(err)
                 }
             }
 
@@ -35,6 +34,7 @@ const PersistLogin = () => {
             // look up the 'persist' key and refresh page
 
             if (!token && persist) {
+
                 verifyRefreshToken()
             }
             //active new jwt token and can being logged in
@@ -43,6 +43,10 @@ const PersistLogin = () => {
             effecRan.current = true;
         }
     }, [])
+
+    console.log({ isLoading })
+    console.log({ isSuccess })
+
     let content;
     if (!persist) {
         console.log('no persist');

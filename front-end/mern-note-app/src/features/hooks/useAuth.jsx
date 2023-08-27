@@ -1,4 +1,3 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from '../auth/authSlice'
 import jwtDecode from 'jwt-decode';
@@ -9,14 +8,13 @@ const useAuth = () => {
     let isAdmin = false;
     let status = "Employee" //default roles
 
-    console.log(token)
     if (token) {
         const decoded = jwtDecode(token);
         //decode from token and return an object contains data
         const { username, roles } = decoded.UserInfo; //get from the accessToken decoded
 
-        isManager = roles?.[0]?.includes('Manager');
-        isAdmin = roles?.[0]?.includes('Admin')
+        isManager = roles?.includes('Manager');
+        isAdmin = roles?.includes('Admin')
 
         if (isManager) status = "Manager"
         if (isAdmin) status = "Admin"

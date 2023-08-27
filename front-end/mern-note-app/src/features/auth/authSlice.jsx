@@ -7,6 +7,7 @@ export const authSlice = createSlice({
         setCredentials: (state, action) => {
             //get accessToken from payload data
             const { accessToken } = action.payload //destructuring
+            console.log({ accessToken })
             state.token = accessToken;
         },
         logOut: (state, action) => {

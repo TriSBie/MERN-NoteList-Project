@@ -5,6 +5,7 @@ import { selectNoteById, useGetNotesQuery } from "./noteApiSlice";
 
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { memo } from "react";
 
 
 
@@ -16,7 +17,6 @@ const Note = ({ noteId }) => {
             note: data?.entities[noteId]
         }),
     })
-
     if (note) {
         const created = new Date(note.createdAt).toLocaleDateString('en-US', {
             day: 'numeric',
@@ -56,7 +56,8 @@ const Note = ({ noteId }) => {
     } else {
         return null
     }
-
 }
 
-export default Note
+const memoNote = memo(Note)
+
+export default memoNote

@@ -37,5 +37,5 @@ const User = ({ userId }) => {
         return null;
     }
 }
-
-export default User
+const memoUser = React.memo(User)
+export default memoUser
